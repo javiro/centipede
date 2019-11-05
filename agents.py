@@ -120,17 +120,17 @@ class CentipedePopulation(object):
 
     def get_strategy_distribution(self):
         strategies = [player.strategy for player in self.population]
-        distribution = np.histogram(strategies, 6)[0]
+        distribution = np.histogram(strategies, bins=[1, 2, 3, 4, 5, 6, 7])[0]
         plt.show()
         return distribution
 
-    def review_strategy(self, population_2):
+    def review_strategy(self, population_other):
         if self.color == 'yellow':
             for player in self.population:
-                player.update_strategy(self.revision_length, population_2)
+                player.update_strategy(self.revision_length, population_other)
         else:
             for player in self.population:
-                player.update_strategy2(self.revision_length, population_2)
+                player.update_strategy2(self.revision_length, population_other)
 
 
 class CentipedeGame(object):
@@ -174,6 +174,7 @@ class CentipedeGame(object):
             index_1 = np.random.permutation(range(self.population_size))
             index_2 = np.random.permutation(range(self.population_size))
             if g % self.review_frequency == 0:
+                # TODO: Review strategy needs to be modified alternating one player from each population.
                 self.population_yellow.review_strategy(self.population_blue)
                 self.population_blue.review_strategy(self.population_yellow)
                 # strategies_yellow.append(self.population_yellow.get_strategy_distribution())
@@ -190,10 +191,11 @@ def main():
     game_rounds = 100
     game_length = 10
     population_size = 1000
-    review_frequency = 50
-    revision_length = 10
+    review_frequency = 1
+    revision_length = 1
 
     g = CentipedeGame(game_rounds, game_length, population_size, review_frequency, revision_length)
+    g.simulate_centipede_game()
 
 
 if __name__ == '__main__':
